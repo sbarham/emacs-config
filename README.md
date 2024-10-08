@@ -51,6 +51,36 @@ cp emacs-config/init.el ~/.emacs.d/init.el
 
 Enjoy your Emacs setup!
 
+## Common Issue with Conda Installations (Emacs v28+)
+
+If you're installing Emacs via Conda (especially versions 28 and 29—currently on v29.3 at the time of writing), you may encounter an error like this:
+
+```
+Wrong type argument: filenamep, "/scratch2/software/anaconda/envs/emacs/share/info^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^\
+@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@\
+^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@/" [24 times]
+```
+
+This is likely due to a corrupted `INFOPATH`, with `@` characters (which may represent null bits) appearing in the file path. This error can prevent Emacs from properly installing or initializing packages.
+
+### Fix:
+
+1. Add the correct file path to your `~/.bashrc` (or equivalent shell configuration file) by setting the `INFOPATH` variable. This environment variable seems to override wherever Emacs is pulling the mangled `filenamep` value from. You can copy the correct path from the error message but **remove the `@` characters**:
+
+   ```bash
+   export INFOPATH=/scratch2/software/anaconda/envs/emacs/share/info
+   ```
+
+   (The path shown is, of course, just an example. Replace it with the path from your error message.)
+
+2. Source your `.bashrc` to apply the change:
+
+   ```bash
+   source ~/.bashrc
+   ```
+
+3. Restart Emacs. The error should now be resolved.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
